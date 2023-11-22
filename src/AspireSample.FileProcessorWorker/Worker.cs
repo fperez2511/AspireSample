@@ -63,7 +63,7 @@ public class Worker : BackgroundService
                 var fileContent = File.ReadAllText(message.Label);
 
                 // Process the file content (e.g., store it in Azure Blob Storage)
-                await StoreFileInBlobStorageAsync(message.Label, fileContent);
+                await StoreFileInBlobStorageAsync(new FileInfo(message.Label).Name, fileContent);
 
                 // Move the file to another location
                 MoveFileToProcessedFolder(message.Label);
@@ -114,6 +114,10 @@ public class Worker : BackgroundService
 
     private void MoveFileToProcessedFolder(string filePath)
     {
+        if (string.IsNullOrEmpty(filePath)) {
+            throw new InvalidDataException("Missing file path");
+        }
+        
         var processedFolder = Path.Combine(Path.GetDirectoryName(filePath), "Processed");
         Directory.CreateDirectory(processedFolder);
 

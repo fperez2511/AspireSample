@@ -52,9 +52,9 @@ public class Worker : BackgroundService
             // Construct the message
             var message = new Message
             {
-                Body = System.Text.Encoding.UTF8.GetBytes($"{filePath}"),
+                Body = System.Text.Encoding.UTF8.GetBytes($"{new FileInfo(filePath).Length}"),
                 ContentType = "text/plain",
-                Label = "FileNotification",
+                Label = $"{filePath}",
             };
 
             // Send the message to the queue
