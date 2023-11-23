@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
+using Microsoft.Extensions.Options;
 
 public class Worker : BackgroundService
 {
@@ -16,12 +17,13 @@ public class Worker : BackgroundService
     private readonly string _queueName;
     private readonly IQueueClient _queueClient;
 
-    public Worker(ILogger<Worker> logger)
+    public Worker(ILogger<Worker> logger, IOptions<ServiceConfiguration> options,
+        IOptions<ConnectionStrings> connections)
     {
         _logger = logger;
-        _folderPath = "YOUR_FOLDER_PATH"; // Replace with the folder path you want to monitor
-        _serviceBusConnectionString = "YOUR_SERVICE_BUS_CONNECTION_STRING";
-        _queueName = "YOUR_QUEUE_NAME";
+        _folderPath = options.Value.FolderPath; // Replace with the folder path you want to monitor
+        _serviceBusConnectionString = connections.Value.ServiceBusConnectionString;
+        _queueName = options.Value.QueueName;
         _queueClient = new QueueClient(_serviceBusConnectionString, _queueName);
     }
 
